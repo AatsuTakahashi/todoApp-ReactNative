@@ -1,17 +1,41 @@
+//cSpell:ignore
 import { useState } from 'react';
 import {
+  FlatList,
   Pressable,
-  // FlatList,
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
+import { Icon } from 'react-native-elements';
 
 export default function App() {
   const [taskText, setTaskText] = useState('');
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<{ id: string; text: string }[]>([]);
+
+  const handleSaveTask = () => {
+    const newTask = { id: Date.now().toString(), text: taskText };
+    setTasks([...tasks, newTask]);
+  };
+
+  const renderTask = ({ item }: { item: Task }) => {
+    return (
+      <View style={styles.task}>
+        <Text style={styles.taskText}>{item.text}</Text>
+        <View style={styles.buttonContainer}>
+          <Pressable style={styles.editButton}>
+            <Icon name='edit' color='#4caf50'>
+              編集
+            </Icon>
+          </Pressable>
+          <Pressable style={styles.deleteButton}>
+            <Text>削除</Text>
+          </Pressable>
+        </View>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -22,10 +46,15 @@ export default function App() {
         onChangeText={setTaskText}
         value={taskText}
       />
-      <Pressable style={styles.saveButton} onPress={() => {}}>
+      <Pressable
+        style={styles.saveButton}
+        onPress={() => {
+          handleSaveTask();
+        }}
+      >
         <Text style={styles.saveButtonText}>追加</Text>
       </Pressable>
-      {/* <FlatList data={[{ id: 1, title: 'ジム' }]} /> */}
+      <FlatList data={tasks} renderItem={renderTask} />
     </View>
   );
 }
@@ -57,5 +86,20 @@ const styles = StyleSheet.create({
   saveButtonText: {
     color: '#fff',
     textAlign: 'center',
+  },
+  task: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+    padding: 10,
+    backgroundColor: '#eeeeee',
+    borderRadius: 5,
+  },
+  taskText: {
+    maxWidth: '80%',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
   },
 });
