@@ -30,7 +30,9 @@ export default function App() {
             </Icon>
           </Pressable>
           <Pressable style={styles.deleteButton}>
-            <Text>削除</Text>
+            <Icon name='削除' color='f44336'>
+              削除
+            </Icon>
           </Pressable>
         </View>
       </View>
