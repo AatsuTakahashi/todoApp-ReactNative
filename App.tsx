@@ -1,13 +1,7 @@
 import { useState } from 'react';
-import {
-  FlatList,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
-import { Icon } from 'react-native-elements';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
+import TaskItem from './src/components/taskItem';
+import TaskInput from './src/components/taskInput';
 
 export default function App() {
   const [taskText, setTaskText] = useState('');
@@ -44,44 +38,23 @@ export default function App() {
 
   const renderTask = ({ item }: { item: Task }) => {
     return (
-      <View style={styles.task}>
-        <Text style={styles.taskText}>{item.text}</Text>
-        <View style={styles.buttonContainer}>
-          <Pressable style={styles.editButton}>
-            <Icon name='edit' color='#4caf50' onPress={() => handleEdit(item)}>
-              編集
-            </Icon>
-          </Pressable>
-          <Pressable
-            style={styles.deleteButton}
-            onPress={() => handleDelete(item.id)}
-          >
-            <Icon name='delete' color='#f44336'>
-              削除
-            </Icon>
-          </Pressable>
-        </View>
-      </View>
+      <TaskItem
+        item={item}
+        handleEdit={handleEdit}
+        handleDelete={handleDelete}
+      />
     );
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Todoアプリへようこそ</Text>
-      <TextInput
-        placeholder='タスクを入力'
-        style={styles.input}
-        onChangeText={setTaskText}
-        value={taskText}
+      <Text style={styles.title}>Todoアプリ</Text>
+      <TaskInput
+        setTaskText={setTaskText}
+        taskText={taskText}
+        handleSaveTask={handleSaveTask}
+        isEditing={isEditing}
       />
-      <Pressable
-        style={styles.saveButton}
-        onPress={() => {
-          handleSaveTask();
-        }}
-      >
-        <Text style={styles.saveButtonText}>{isEditing ? '編集' : '追加'}</Text>
-      </Pressable>
       <FlatList data={tasks} renderItem={renderTask} />
     </View>
   );
@@ -97,37 +70,5 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccceee',
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 6,
-  },
-  saveButton: {
-    backgroundColor: 'green',
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 20,
-  },
-  saveButtonText: {
-    color: '#fff',
-    textAlign: 'center',
-  },
-  task: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-    padding: 10,
-    backgroundColor: '#eeeeee',
-    borderRadius: 5,
-  },
-  taskText: {
-    maxWidth: '80%',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
   },
 });
