@@ -1,4 +1,3 @@
-//cSpell:ignore
 import { useState } from 'react';
 import {
   FlatList,
@@ -13,10 +12,34 @@ import { Icon } from 'react-native-elements';
 export default function App() {
   const [taskText, setTaskText] = useState('');
   const [tasks, setTasks] = useState<{ id: string; text: string }[]>([]);
+  const [isEditing, setIsEditing] = useState(null);
 
   const handleSaveTask = () => {
-    const newTask = { id: Date.now().toString(), text: taskText };
-    setTasks([...tasks, newTask]);
+    if (!taskText.trim()) return;
+    if (isEditing) {
+      setTasks(
+        tasks.map((task) =>
+          task.id === isEditing ? { ...task, text: taskText } : task
+        )
+      );
+      setIsEditing(null);
+    } else {
+      const newTask = { id: Date.now().toString(), text: taskText };
+      setTasks([...tasks, newTask]);
+    }
+
+    setTaskText('');
+  };
+
+  const handleEdit = (item: any) => {
+    setTaskText(item.text);
+    setIsEditing(item.id);
+  };
+
+  const handleDelete = (id: string) => {
+    setTasks(tasks.filter((task) => task.id !== id));
+
+    setTaskText('');
   };
 
   const renderTask = ({ item }: { item: Task }) => {
@@ -25,12 +48,15 @@ export default function App() {
         <Text style={styles.taskText}>{item.text}</Text>
         <View style={styles.buttonContainer}>
           <Pressable style={styles.editButton}>
-            <Icon name='edit' color='#4caf50'>
+            <Icon name='edit' color='#4caf50' onPress={() => handleEdit(item)}>
               編集
             </Icon>
           </Pressable>
-          <Pressable style={styles.deleteButton}>
-            <Icon name='削除' color='f44336'>
+          <Pressable
+            style={styles.deleteButton}
+            onPress={() => handleDelete(item.id)}
+          >
+            <Icon name='delete' color='#f44336'>
               削除
             </Icon>
           </Pressable>
@@ -54,7 +80,7 @@ export default function App() {
           handleSaveTask();
         }}
       >
-        <Text style={styles.saveButtonText}>追加</Text>
+        <Text style={styles.saveButtonText}>{isEditing ? '編集' : '追加'}</Text>
       </Pressable>
       <FlatList data={tasks} renderItem={renderTask} />
     </View>
