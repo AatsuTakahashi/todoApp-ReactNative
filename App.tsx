@@ -36,16 +36,6 @@ export default function App() {
     setTaskText('');
   };
 
-  const renderTask = ({ item }: { item: Task }) => {
-    return (
-      <TaskItem
-        item={item}
-        handleEdit={handleEdit}
-        handleDelete={handleDelete}
-      />
-    );
-  };
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Todoアプリ</Text>
@@ -55,7 +45,17 @@ export default function App() {
         handleSaveTask={handleSaveTask}
         isEditing={isEditing}
       />
-      <FlatList data={tasks} renderItem={renderTask} />
+      <FlatList
+        data={tasks}
+        renderItem={({ item }) => (
+          <TaskItem
+            item={item}
+            handleEdit={handleEdit}
+            handleDelete={handleDelete}
+          />
+        )}
+        keyExtractor={(item) => item.id}
+      />
     </View>
   );
 }
