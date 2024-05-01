@@ -1,29 +1,28 @@
 import { Pressable, Text, View, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-elements';
+import React from 'react';
 
-const TaskItem: React.FC<taskItemProps> = ({
-  item,
-  handleEdit,
-  handleDelete,
-}) => {
-  return (
-    <View style={styles.task}>
-      <Text style={styles.taskText}>{item.text}</Text>
-      <View style={styles.buttonContainer}>
-        <Pressable>
-          <Icon name='edit' color='#4caf50' onPress={() => handleEdit(item)}>
-            編集
-          </Icon>
-        </Pressable>
-        <Pressable onPress={() => handleDelete(item.id)}>
-          <Icon name='delete' color='#f44336'>
-            削除
-          </Icon>
-        </Pressable>
+const TaskItem: React.FC<taskItemProps> = React.memo(
+  ({ item, handleEdit, handleDelete }) => {
+    return (
+      <View style={styles.task}>
+        <Text style={styles.taskText}>{item.text}</Text>
+        <View style={styles.buttonContainer}>
+          <Pressable>
+            <Icon name='edit' color='#4caf50' onPress={() => handleEdit(item)}>
+              編集
+            </Icon>
+          </Pressable>
+          <Pressable onPress={() => handleDelete(item.id)}>
+            <Icon name='delete' color='#f44336'>
+              削除
+            </Icon>
+          </Pressable>
+        </View>
       </View>
-    </View>
-  );
-};
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   task: {
